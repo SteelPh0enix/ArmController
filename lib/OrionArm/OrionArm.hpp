@@ -52,7 +52,7 @@ class Arm {
       case 1: {
         auto data = json["DATA"];
         if (data.success()) {
-          move(json["DATA"], ret["DATA"], buffer);
+          move(data, ret["DATA"], buffer);
         }
       }
       case 2:
@@ -74,7 +74,7 @@ class Arm {
     // TODO: Write actual command behaviour.
     // Reason why it's not done yet: i have to write encoders code first
     // For now, it does nothing. All the command ID's are invalid.
-    ret["DATA"]["CMDF"] = -1;
+    ret["CMDF"] = -1;
   }
 
   // Received move data and sets the motor speeds/positions according to them.
@@ -84,7 +84,19 @@ class Arm {
   //    be stored
   //  JSON_BUFFER& buffer - a buffer used to create objects/arrays
   template <class JSON_BUFFER>
-  void move(const JsonObject& data, JsonObject& ret, JSON_BUFFER& buffer) {}
+  void move(const JsonObject& data, JsonObject& ret, JSON_BUFFER& buffer) {
+    // Iterate throught received data
+    // Note: I don't check data validity there. ArmController does that.
+    // If you send dumb data - expect to get [0, 0, 1] (no speed, no current,
+    // error happened)
+    for (const auto& o : data) {
+      _arm->setMotorSpeed(o.key, o.value.as<int>());
+      auto& feedback = ret.createNestedArray(o.key);
+      feedback.add(_arm->getMotorSpeed(o.key));
+      feedback.add(_arm->getMotorCurrent(o.key));
+      feedback.add(_arm->getMotorError(o.key));
+    }
+  }
 
  private:
   // The arm class will be put on heap, to prevent stack overflow.
