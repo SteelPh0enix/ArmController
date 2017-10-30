@@ -52,17 +52,23 @@ class Arm {
       case 1: {
         auto data = json["DATA"];
         if (data.success()) {
-          move(json["DATA"], ret, buffer);
+          move(json["DATA"], ret["DATA"], buffer);
         }
       }
       case 2:
-        executeCommand(json["DATA"].as<int>(), buffer);
+        executeCommand(json["DATA"].as<int>(), ret["DATA"], buffer);
     }
 
     // Return the object
     return ret;
   }
 
+  // Recives command ID, and executes it. Modifies referenced JSON.
+  // Arguments:
+  //  int command - command ID
+  //  JsonObject& ret - reference to json object in which the output data will
+  //    be stored
+  //  JSON_BUFFER& buffer - a buffer used to create objects/arrays
   template <class JSON_BUFFER>
   void executeCommand(int command, JsonObject& ret, JSON_BUFFER& buffer) {
     // TODO: Write actual command behaviour.
@@ -71,6 +77,12 @@ class Arm {
     ret["DATA"]["CMDF"] = -1;
   }
 
+  // Received move data and sets the motor speeds/positions according to them.
+  // Arguments:
+  //  const JsonObject& data - received data
+  //  JsonObject& ret - reference to json object in which the output data will
+  //    be stored
+  //  JSON_BUFFER& buffer - a buffer used to create objects/arrays
   template <class JSON_BUFFER>
   void move(const JsonObject& data, JsonObject& ret, JSON_BUFFER& buffer) {}
 
