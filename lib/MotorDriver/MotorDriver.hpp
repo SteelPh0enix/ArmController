@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <cstdint>
 
+namespace Orion {
+
 class MC33926MotorDriver {
  public:
   struct Pins {
@@ -30,5 +32,7 @@ class MC33926MotorDriver {
   Pins _pins;
   int _speed;
 };
+
+}  // namespace Orion
 
 #endif

@@ -1,5 +1,7 @@
 #include "MotorDriver.hpp"
 
+namespace Orion {
+
 MC33926MotorDriver::MC33926MotorDriver()
     : _initialized(false), _pinsSet(false), _speed(0) {}
 
@@ -55,4 +57,6 @@ uint32_t MC33926MotorDriver::getCurrent() const {
 bool MC33926MotorDriver::getError() const {
   if (!isInitialized()) return true;
   return !static_cast<bool>(digitalRead(_pins.nSF));
+}
+
 }

@@ -7,12 +7,12 @@
 #include <cstdint>
 #include <cstring>
 
+namespace Orion {
+enum class MotorType { Null, Servo, DC, Actuator };
+
 template <std::size_t ID_LENGHT, std::size_t COUNT>
 class ArmController {
   using MotorName = char[ID_LENGHT + 1];
-
- public:
-  enum class MotorType { Null, Servo, DC, Actuator };
 
   struct MotorInfo {
     MotorName id;
@@ -20,6 +20,10 @@ class ArmController {
     int speed;
     MotorType type;
   };
+
+ public:
+  const std::size_t IDMaxLenght = ID_LENGHT;
+  const std::size_t MotorCount = COUNT;
 
   ArmController() {
     for (Motor& m : _motors) m.id[0] = '\0';
@@ -43,7 +47,7 @@ class ArmController {
       if (m.id[0] == '\0') {
         m.servo.attach(pin);
         m.servo.write(90);
-        m.id = id;
+        strcpy(m.id, id);
         m.type = MotorType::Servo;
         return true;
       }
@@ -163,4 +167,5 @@ class ArmController {
   std::array<Motor, COUNT> _motors;
 };
 
+}  // namespace Orion
 #endif
