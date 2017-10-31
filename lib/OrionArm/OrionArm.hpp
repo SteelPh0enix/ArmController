@@ -34,9 +34,9 @@ class Arm {
   ~Arm() { delete _arm; }
 
   template <class JSON_BUFFER>
-  JsonObject executeJSON(const JsonObject& json, JSON_BUFFER& buffer) {
+  JsonObject& executeJSON(const JsonObject& json, JSON_BUFFER& buffer) {
     // Create return object
-    auto ret = buffer.createObject();
+    JsonObject& ret = buffer.createObject();
     ret["ID"] = 32;
     ret["DATA"] = buffer.createObject();
 
