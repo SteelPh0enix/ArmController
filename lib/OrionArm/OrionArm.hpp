@@ -8,8 +8,8 @@
   - Grasper rotation motor - GRM
   - Grasper horizontal servo - GHS
 
-  Incoming data has format:
-  -
+  For the more verbose description, go here:
+  http://oriondoc.readthedocs.io/en/latest/docs/SDD/arm_io_documentation.html
 */
 #ifndef __ORION_ARMLIB__
 #define __ORION_ARMLIB__
