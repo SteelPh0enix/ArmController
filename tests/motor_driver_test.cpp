@@ -9,8 +9,8 @@ void test_driver_config() {
   Serial.print("driver.isInitialied() = ");
   Serial.println(driver.isInitialized());
 
-  Serial.print("driver.initialize({2, 40, A0, 41, 42}) = ");
-  Serial.println(driver.initialize({2, 40, A0, 41, 42}));
+  Serial.print("driver.initialize({2, 26, A1, 29, 28}) = ");
+  Serial.println(driver.initialize({2, 26, A1, 29, 28}));
 
   Serial.print("driver.pinsSet() = ");
   Serial.println(driver.pinsSet());
@@ -46,7 +46,7 @@ void test_driver_overset_speed() {
   Serial.println(driver.getSpeed());
   Serial.print("driver.getError() = ");
   Serial.println(driver.getError());
-  delay(1000);  
+  delay(1000);
 
   driver.setSpeed(-1000);
   Serial.print("Speed set to -1000. driver.getSpeed() = ");

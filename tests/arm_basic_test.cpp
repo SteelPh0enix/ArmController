@@ -25,7 +25,7 @@ void checkDumb() {
 void setup() {
   Serial.begin(9600);
   Serial.print("Adding motor... ");
-  Serial.println(arm.addMotor("TEST", Arm::MotorType::DC, {2, 40, A0, 41, 42}));
+  Serial.println(arm.addMotor("TEST", Arm::MotorType::DC, {2, 26, A1, 29, 28}));
 
   setSpeed(100);
   delay(1500);

@@ -2,14 +2,20 @@
 #include <OrionArm.hpp>
 
 Orion::Arm arm;
-StaticJsonBuffer<512> jsonBuffer;
+StaticJsonBuffer<1024> jsonBuffer;
 
-void setup() { Serial.begin(38400); }
+void setup() {
+  Serial.begin(115200);
+  arm.waitForResponse();
+}
 
 void loop() {
   if (Serial.available()) {
-    JsonObject& json = jsonBuffer.parse(Serial);
+    auto received_json = Serial.readStringUntil('\n');
+    JsonObject& json = jsonBuffer.parse(received_json);
+
     JsonObject& feedback = arm.executeJSON(json, jsonBuffer);
     feedback.printTo(Serial);
+    jsonBuffer.clear();
   }
 }
