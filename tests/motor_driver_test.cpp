@@ -1,6 +1,26 @@
 #include <MotorDriver.hpp>
 
-MC33926MotorDriver driver;
+Orion::MC33926MotorDriver driver;
+
+/* PINS
+  22 - DIR1
+  23 - DIR2
+  26 - DIR3
+  27 - DIR4
+
+  A0 - FB1
+  A1 - FB2
+  A2 - FB3
+  A3 - FB4
+
+  2 - PWM1
+  3 - PWM2
+  4 - PWM3
+  5 - PWM4
+
+  24, 25 - nD2, SF
+  28, 29 - nD2, SF
+*/
 
 void test_driver_config() {
   Serial.println("== Starting test_driver_config... ==");
@@ -10,7 +30,7 @@ void test_driver_config() {
   Serial.println(driver.isInitialized());
 
   Serial.print("driver.initialize({2, 26, A1, 29, 28}) = ");
-  Serial.println(driver.initialize({2, 26, A1, 29, 28}));
+  Serial.println(driver.initialize({5, 27, A3, 28, 29}));
 
   Serial.print("driver.pinsSet() = ");
   Serial.println(driver.pinsSet());

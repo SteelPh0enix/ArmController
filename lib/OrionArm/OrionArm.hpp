@@ -1,14 +1,25 @@
 /*
   Arm structure and JSON keys for motors:
-  - Turntable motor - TRM
-  - Lower arm actuator - LAA
-  - Upper arm actuator - UAA
-  - Arm extending motor - AEM
-  - Grasper up/down (vertical) movement motor - GVM
-  - Grasper rotation motor - GRM
-  - Grasper horizontal servo - GHS
+  [CONTROLLER_ID - NAME - KEY]
+  #1.1 - Turntable motor - TRM
+  #1.2 - Lower arm actuator - LAA
+  #2.1 - Upper arm actuator - UAA
+  #2.2 - Arm extending motor - AEM
+  #3.1 - Grasper up/down (vertical) movement motor - GVM
+  #3.2 - Grasper rotation motor - GRM
+  PWM #8 - Grasper horizontal servo - GHS
 
-  For the more verbose description, go here:
+  Motor driver physical connections:
+  [CONTROLLER_ID - PIN/{PWM, DIR, FB, ND2, SF}]
+  #1.1 - {2, 22, A0, 24, 25}
+  #1.2 - {3, 23, A1, 24, 25}
+  #2.1 - {4, 26, A2, 28, 29}
+  #2.2 - {5, 27, A3, 28, 29}
+  #3.1 - {6, 30, A4, 32, 33}
+  #3.2 - {7, 31, A5, 32, 33}
+  PWM #8 - 8
+
+  For more, go here:
   http://oriondoc.readthedocs.io/en/latest/docs/SDD/arm_io_documentation.html
 */
 #ifndef __ORION_ARMLIB__
@@ -21,17 +32,12 @@
 namespace Orion {
 
 class Arm {
-  using arm_controller = ArmController<3, 1>;
+  using arm_controller = ArmController<3, 7>;
 
  public:
   Arm() : _arm(new arm_controller) {
-    _arm->addMotor(/*"TRM"*/ "GVM", MotorType::DC, {2, 26, A1, 29, 28});
-    //_arm->addMotor("LAA", MotorType::Actuator, {3, 26, A1, 27, 28});
-    //_arm->addMotor("UAA", MotorType::Actuator, {4, 30, A2, 31, 32});
-    //_arm->addMotor("AEM", MotorType::DC, {5, 34, A3, 35, 36});
-    //_arm->addMotor("GVM", MotorType::DC, {6, 38, A4, 39, 40});
-    //_arm->addMotor("GRM", MotorType::DC, {7, 42, A5, 43, 44});
-    //_arm->addServo("GHS", 8);
+    _arm->addMotor("ABC", MotorType::DC, {4, 26, A2, 28, 29});
+    _arm->addMotor("XYZ", MotorType::DC, {5, 27, A3, 28, 29});
   }
 
   ~Arm() { delete _arm; }
@@ -54,12 +60,12 @@ class Arm {
       case 1: {
         auto data = json["DATA"];
         if (data.success()) {
-          move(data, ret["DATA"], buffer);
+          move(data, ret["DATA"]);
         }
         break;
       }
       case 2:
-        executeCommand(json["DATA"].as<int>(), ret["DATA"], buffer);
+        executeCommand(json["DATA"].as<int>(), ret["DATA"]);
         break;
     }
 
@@ -72,9 +78,7 @@ class Arm {
   //  int command - command ID
   //  JsonObject& ret - reference to json object in which the output data will
   //    be stored
-  //  JSON_BUFFER& buffer - a buffer used to create objects/arrays
-  template <class JSON_BUFFER>
-  void executeCommand(int command, JsonObject& ret, JSON_BUFFER& buffer) {
+  void executeCommand(int command, JsonObject& ret) {
     // TODO: Write actual command behaviour.
     // Reason why it's not done yet: i have to write encoders code first
     // For now, it does nothing. All the command ID's are invalid.
@@ -86,9 +90,7 @@ class Arm {
   //  const JsonObject& data - received data
   //  JsonObject& ret - reference to json object in which the output data will
   //    be stored
-  //  JSON_BUFFER& buffer - a buffer used to create objects/arrays
-  template <class JSON_BUFFER>
-  void move(const JsonObject& data, JsonObject& ret, JSON_BUFFER& buffer) {
+  void move(const JsonObject& data, JsonObject& ret) {
     // Iterate throught received data
     // Feedback is returned only when referenced motor exists
     for (const auto& o : data) {
