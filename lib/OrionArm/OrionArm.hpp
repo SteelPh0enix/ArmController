@@ -1,13 +1,13 @@
 /*
   Arm structure and JSON keys for motors:
   [CONTROLLER_ID - NAME - KEY]
-  #1.1 - Turntable motor - TRM
+  #1.1 - Upper arm actuator - UAA
   #1.2 - Lower arm actuator - LAA
-  #2.1 - Upper arm actuator - UAA
-  #2.2 - Arm extending motor - AEM
-  #3.1 - Grasper up/down (vertical) movement motor - GVM
-  #3.2 - Grasper rotation motor - GRM
-  PWM #8 - Grasper horizontal servo - GHS
+  #2.1 - Turret rotation motor (NOT COUPLED) - TRM
+  #2.2 - Grasper vertical motor (NOT COUPLED) - GVM
+  #3.1 - n/a
+  #3.2 - n/a
+  PWM #8 - n/a
 
   Motor driver physical connections:
   [CONTROLLER_ID - PIN/{PWM, DIR, FB, ND2, SF}]
@@ -32,12 +32,17 @@
 namespace Orion {
 
 class Arm {
-  using arm_controller = ArmController<3, 7>;
+  using arm_controller = ArmController<4, 3>;
 
  public:
   Arm() : _arm(new arm_controller) {
-    _arm->addMotor("ABC", MotorType::DC, {4, 26, A2, 28, 29});
-    _arm->addMotor("XYZ", MotorType::DC, {5, 27, A3, 28, 29});
+    _arm->addMotor("UAA", MotorType::Actuator, {2, 22, A0, 24, 25});
+    _arm->addMotor("LAA", MotorType::Actuator, {3, 23, A1, 24, 25});
+    _arm->addMotor("TRM", MotorType::DC, {4, 26, A2, 28, 29});
+
+    _motor_names[0] = "UAA";
+    _motor_names[1] = "LAA";
+    _motor_names[2] = "TRM";
   }
 
   ~Arm() { delete _arm; }
@@ -111,10 +116,19 @@ class Arm {
     }
   }
 
+  void printCurrents() const {
+    for (const auto& m : _motor_names) {
+      Serial.print(m);
+      Serial.print(" -> ");
+      Serial.println(_arm->getMotorCurrent(m));
+    }
+  }
+
  private:
   // The arm class will be put on heap, to save the stack for JSON buffer
   // At least, for now.
   arm_controller* _arm;
+  const char* _motor_names[3];
 };
 
 }  // namespace Orion

@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArmController.hpp>
 
-using Arm = ArmController<6, 1>;
+using Arm = Orion::ArmController<6, 1>;
 Arm arm;
 
 void setSpeed(int speed) {
@@ -25,19 +25,20 @@ void checkDumb() {
 void setup() {
   Serial.begin(9600);
   Serial.print("Adding motor... ");
-  Serial.println(arm.addMotor("TEST", Arm::MotorType::DC, {2, 26, A1, 29, 28}));
+  Serial.println(
+      arm.addMotor("TEST", Orion::MotorType::Actuator, {5, 27, A3, 28, 29}));
 
   setSpeed(100);
-  delay(1500);
+  delay(1000);
   setSpeed(-100);
-  delay(1500);
-  setSpeed(2137);
-  delay(1500);
-  setSpeed(-2137);
-  delay(1500);
+  delay(1000);
+  setSpeed(1234);
+  delay(1000);
+  setSpeed(-1234);
+  delay(1000);
+  setSpeed(0);
 
   checkDumb();
-  setSpeed(0);
 }
 
 void loop() {}

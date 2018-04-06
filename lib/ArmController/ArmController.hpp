@@ -10,9 +10,9 @@
 namespace Orion {
 enum class MotorType { Null, Servo, DC, Actuator };
 
-template <std::size_t ID_LENGHT, std::size_t COUNT>
+template <std::size_t ID_LENGTH, std::size_t COUNT>
 class ArmController {
-  using MotorName = char[ID_LENGHT + 1];
+  using MotorName = char[ID_LENGTH + 1];
 
   struct MotorInfo {
     MotorName id;
@@ -22,7 +22,7 @@ class ArmController {
   };
 
  public:
-  const std::size_t IDMaxLenght = ID_LENGHT;
+  const std::size_t IDMaxLenght = ID_LENGTH;
   const std::size_t MotorCount = COUNT;
 
   ArmController() {
@@ -67,6 +67,10 @@ class ArmController {
   bool setMotorSpeed(const MotorName id, int speed) {
     auto motorPtr = _getMotorPtr(id);
     if (motorPtr != nullptr) {
+      Serial.print("Motor name: ");
+      Serial.print(id);
+      Serial.print(", speed:");
+      Serial.println(speed);
       switch (motorPtr->type) {
         case MotorType::Null:
           return false;
